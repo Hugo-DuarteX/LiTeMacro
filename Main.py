@@ -1,81 +1,62 @@
-# LiTeMacro V1.0
+# LiTeMacro V2.0
 # Done By Hugo Duarte
+
+#Requirements: A HQ icon image of misson complete scroll, send on quest blue button and confirm green button.
 
 import pyautogui
 import time
 import psutil
-from colormap import rgb2hex
-
-
-def get_pixel_colour(i_x, i_y):
-    import PIL.ImageGrab
-    return PIL.ImageGrab.grab().load()[i_x, i_y]
+from screeninfo import get_monitors
 
 
 def start_quest():
     time.sleep(1)
+    
+    # Solicitar envio para missão
     print('Buscando botão para envio da missão')
-    pixel_rgb = get_pixel_colour(1620, 915)
-    while not rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]) == '#0CCECF':
-        time.sleep(1)
-        print('Não foi possível encontrar o botão, refazendo análise. Cor atual:')
-        print(rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]))
-        pixel_rgb = get_pixel_colour(1620, 915)
-    pyautogui.click(1620, 915)
+    image_name = 'SendOnQuest.png'
+    icon = pyautogui.locateCenterOnScreen(image_name, confidence=0.8)
 
-    print('Buscando botão de confirmação de operação')
-    pixel_rgb = get_pixel_colour(1170, 700)
-    while not rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]) == '#0BD40B':
+    while icon is None:
+        print("Não foi possivel encontrar o icone de envio, refazendo análise.") 
         time.sleep(1)
-        print('Não foi possível encontrar o botão, refazendo análize')
-        pixel_rgb = get_pixel_colour(1170, 700)
-    pyautogui.click(1170, 700)
+        icon = pyautogui.locateCenterOnScreen(image_name, confidence=0.8)
+
+    print('Icone encontrado, iniciando o procedimento de envio')
+    time.sleep(1)
+    pyautogui.click(icon[0], icon[1])
+
+    # Confirmando envio para missão
+    print('Buscando botão de confirmação da missão')
+    image_name = 'Confirm.png'
+    icon = pyautogui.locateCenterOnScreen(image_name, confidence=0.8)
+
+    while icon is None:
+        print("Não foi possivel encontrar o icone de confirmação, refazendo análise.") 
+        time.sleep(1)
+        icon = pyautogui.locateCenterOnScreen(image_name, confidence=0.8)
+
+    print('Icone encontrado, confirmando o envio para missão')
+    time.sleep(1)
+    pyautogui.click(icon[0], icon[1])
 
     return True
 
 
+print('Iniciando macro..')
+
 while "LiteBringer.exe" in (i.name() for i in psutil.process_iter()):
-    print('Iniciando macro..')
-    time.sleep(3)
-    # Clicando na janela do LiteBringer
-    print('Clicando na janela do LiteBringer')
-    pyautogui.click(1040, 80)
+    # Esperar a conclusão da missão
+    print('Iniciando a validação/envio do char')
+    image_name = 'QuestCompleted.png'
+    icon = pyautogui.locateCenterOnScreen(image_name, confidence=0.8)
+
+    while icon is None:
+        print("Não foi possivel encontrar o icone de missão concluida, refazendo análise.") 
+        time.sleep(1)
+        icon = pyautogui.locateCenterOnScreen(image_name, confidence=0.8)
+
+    print('Icone encontrado, iniciando o procedimento de reenvio')
     time.sleep(1)
-    # Esperar a conclusão da missão do primeiro char
-    print('Iniciando a validação/envio do primeiro char')
-    pixel_rgb = get_pixel_colour(1675, 260)
-    while not rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]) == '#E4C560':
-        print('Não foi possivel encontrar o icone de conclusão, refazendo análise. Cor atual:')
-        print(rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]))
-        time.sleep(1)
-        pixel_rgb = get_pixel_colour(1675, 260)
-    print('Icone encontrado, iniciando o procedimento de envio')
-    pyautogui.click(1675, 260)
+    pyautogui.click(icon[0], icon[1])
     start_quest()
-
-    # Esperar a conclusão da missão do segundo char
-    print('Iniciando a validação/envio do segundo char')
-    pixel_rgb = get_pixel_colour(1675, 400)
-    while not rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]) == '#E4C560':
-        print('Não foi possivel encontrar o icone de conclusão, refazendo analise.  Cor atual:')
-        print(rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]))
-        time.sleep(1)
-        pixel_rgb = get_pixel_colour(1675, 400)
-    print('Icone encontrado, iniciando o procedimento de envio')
-    pyautogui.click(1675, 400)
-    start_quest()
-
-    # Esperar a conclusão da missão do terceiro char
-    print('Iniciando a validação/envio do terceiro char')
-    pixel_rgb = get_pixel_colour(1675, 540)
-    while not rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]) == '#E4C560':
-        print('Não foi possivel encontrar o icone de conclusão, refazendo análise. Cor atual:')
-        print(rgb2hex(pixel_rgb[0], pixel_rgb[1], pixel_rgb[2]))
-        time.sleep(1)
-        pixel_rgb = get_pixel_colour(1675, 540)
-    print('Icone encontrado, iniciando o procedimento de envio')
-    pyautogui.click(1675, 540)
-    start_quest()
-
-    # print(pyautogui.position())
-    #print(rgb2hex(get_pixel_colour(315, 380)))
